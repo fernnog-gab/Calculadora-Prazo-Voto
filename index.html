@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Prazos | Dias Úteis</title>
+    <style>
+        /* Variáveis de Tema: Premium Dark Gold */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --gold-primary: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --border-radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Card de Input */
+        .input-card {
+            background-color: var(--card-bg);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-card h1 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--gold-primary);
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--gold-primary);
+            color: #000;
+            border: none;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: #f3c83f;
+            box-shadow: 0 0 20px var(--gold-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Card de Resultado (Alta visibilidade) */
+        .result-card {
+            background-color: var(--card-bg);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--gold-primary);
+            box-shadow: 0 8px 32px var(--gold-glow);
+            display: none; /* Oculto inicialmente */
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .result-card.active {
+            display: block;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .result-date {
+            font-size: 2.8rem;
+            color: var(--gold-primary);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .result-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Lista de Feriados (Não tão evidente) */
+        .holidays-list {
+            margin-top: 24px;
+            text-align: left;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 16px;
+        }
+
+        .holidays-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .holidays-items {
+            list-style: none;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            max-height: 120px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .holidays-items li {
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .holidays-items li span.date {
+            color: rgba(212, 175, 55, 0.6);
+        }
+
+        /* Scrollbar customizada para os feriados */
+        .holidays-items::-webkit-scrollbar {
+            width: 4px;
+        }
+        .holidays-items::-webkit-scrollbar-thumb {
+            background-color: rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="input-card">
+            <h1>Calcular Prazo em Dias Úteis</h1>
+            <div class="input-wrapper">
+                <input type="number" id="daysInput" placeholder="Ex: 30" min="1" inputmode="numeric">
+            </div>
+            <button onclick="calculateDate()">Calcular Data</button>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-label">Data Final</div>
+            <div class="result-date" id="finalDateDisplay">--/--/----</div>
+            <div class="result-sub" id="calculationInfo"></div>
+            
+            <div class="holidays-list" id="holidaysSection" style="display: none;">
+                <div class="holidays-title">Feriados Desconsiderados:</div>
+                <ul class="holidays-items" id="holidaysList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica unificada no próprio arquivo
+        
+        /**
+         * Verifica se uma data é feriado nacional brasileiro.
+         * Retorna o nome do feriado ou null.
+         */
+        function checkHoliday(dateObj) {
+            // Extração de data local garantida para evitar dessincronização por fuso horário (UTC)
+            const yyyy = dateObj.getFullYear();
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dateObj.getDate()).padStart(2, '0');
+            
+            const dateString = `${yyyy}-${mm}-${dd}`;
+            const monthDay = `${mm}-${dd}`;
+
+            // Feriados Nacionais Fixos do Brasil
+            const fixedHolidays = {
+                '01-01': 'Confraternização Universal',
+                '04-21': 'Tiradentes',
+                '05-01': 'Dia do Trabalho',
+                '09-07': 'Independência do Brasil',
+                '10-12': 'N. Sra. Aparecida',
+                '11-02': 'Finados',
+                '11-15': 'Proclamação da República',
+                '11-20': 'Dia da Consciência Negra',
+                '12-25': 'Natal'
+            };
+
+            // Feriados Móveis Principais (2026 e 2027) devidamente atualizados
+            const mobileHolidays = {
+                '2026-02-16': 'Carnaval',
+                '2026-02-17': 'Carnaval',
+                '2026-04-03': 'Paixão de Cristo',
+                '2026-06-04': 'Corpus Christi', // Data corrigida para 2026
+                '2027-02-08': 'Carnaval',
+                '2027-02-09': 'Carnaval',
+                '2027-03-26': 'Paixão de Cristo',
+                '2027-05-27': 'Corpus Christi'
+            };
+
+            if (mobileHolidays[dateString]) return mobileHolidays[dateString];
+            if (fixedHolidays[monthDay]) return fixedHolidays[monthDay];
+            
+            return null;
+        }
+
+        function formatDate(dateObj) {
+            return dateObj.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function calculateDate() {
+            const daysToAdd = parseInt(document.getElementById('daysInput').value, 10);
+            
+            if (isNaN(daysToAdd) || daysToAdd <= 0) {
+                alert('Por favor, insira um número válido de dias úteis.');
+                return;
+            }
+
+            // Inicia com a data atual do sistema do usuário
+            let currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0); // Zera as horas para padronização local
+            
+            const startDateFormatted = formatDate(currentDate);
+            let addedDays = 0;
+            let skippedHolidays = [];
+
+            while (addedDays < daysToAdd) {
+                // Adiciona 1 dia
+                currentDate.setDate(currentDate.getDate() + 1);
+                
+                const dayOfWeek = currentDate.getDay(); // 0 = Domingo, 6 = Sábado
+                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                const holidayName = checkHoliday(currentDate);
+
+                if (isWeekend) {
+                    continue; // Pula o fim de semana, não contabiliza no prazo
+                }
+
+                if (holidayName) {
+                    skippedHolidays.push({
+                        date: formatDate(currentDate),
+                        name: holidayName
+                    });
+                    continue; // Pula o feriado, não contabiliza no prazo
+                }
+
+                // Se não é fim de semana nem feriado, é um dia útil válido
+                addedDays++;
+            }
+
+            // Atualiza a Interface
+            const resultCard = document.getElementById('resultCard');
+            document.getElementById('finalDateDisplay').innerText = formatDate(currentDate);
+            document.getElementById('calculationInfo').innerText = `Contagem iniciada a partir de ${startDateFormatted}`;
+            
+            // Renderiza a lista de feriados ignorados
+            const holidaysSection = document.getElementById('holidaysSection');
+            const holidaysList = document.getElementById('holidaysList');
+            holidaysList.innerHTML = '';
+
+            if (skippedHolidays.length > 0) {
+                skippedHolidays.forEach(holiday => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>${holiday.name}</span> <span class="date">${holiday.date}</span>`;
+                    holidaysList.appendChild(li);
+                });
+                holidaysSection.style.display = 'block';
+            } else {
+                holidaysSection.style.display = 'none';
+            }
+
+            // Exibe o card com animação
+            resultCard.classList.add('active');
+        }
+
+        // Permite acionar o cálculo ao apertar "Enter" no teclado
+        document.getElementById('daysInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateDate();
+            }
+        });
+    </script>
+</body>
+</html>
