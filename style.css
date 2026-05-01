@@ -91,7 +91,7 @@ body {
 
 .input-card h1 { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 24px; font-weight: 500; }
 
-/* --- NOVOS ESTILOS: RETROATIVIDADE E ATALHOS --- */
+/* --- ESTILOS DE RETROATIVIDADE E ATALHOS --- */
 .offset-section { margin-bottom: 20px; text-align: left; }
 
 .section-label {
@@ -177,8 +177,38 @@ button.calc-btn:hover { filter: brightness(1.1); box-shadow: 0 0 20px var(--gold
 .holidays-items::-webkit-scrollbar { width: 4px; }
 .holidays-items::-webkit-scrollbar-thumb { background-color: var(--gold-primary); border-radius: 4px; }
 
+/* --- CITAÇÕES INSPIRACIONAIS --- */
+.quote-panel {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    padding: 0 16px;
+    line-height: 1.4;
+    cursor: pointer;
+    /* Configuração de transição suave em vez de animação crua */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; 
+    /* Impede o usuário de selecionar texto de azul ao dar o duplo clique */
+    user-select: none; 
+    -webkit-user-select: none;
+}
+
+.quote-panel:hover { opacity: 1; }
+
+.quote-author {
+    display: block;
+    margin-top: 6px;
+    font-weight: 600;
+    color: var(--gold-primary);
+    font-style: normal;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 400px) {
     .shortcuts-grid { grid-template-columns: 1fr; }
-}
+                                          }
