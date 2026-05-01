@@ -26,6 +26,7 @@
     </button>
 
     <div class="container">
+        <!-- Card Principal de Input e Atalhos -->
         <div class="input-card">
             <h1>Calcular Prazo em Dias Úteis</h1>
             
@@ -60,12 +61,14 @@
 
             <div class="divider">ou digite um prazo manual</div>
 
+            <!-- Digitação Manual -->
             <div class="input-wrapper">
                 <input type="number" id="daysInput" placeholder="Ex: 15" min="1" inputmode="numeric">
             </div>
             <button class="calc-btn" onclick="calculateDate()">Calcular Data Manual</button>
         </div>
 
+        <!-- Card de Resultado Final -->
         <div class="result-card" id="resultCard" aria-live="polite">
             <div class="result-label">Data Final</div>
             <div class="result-date" id="finalDateDisplay">--/--/----</div>
@@ -76,6 +79,11 @@
                 <ul class="holidays-items" id="holidaysList">
                 </ul>
             </div>
+        </div>
+
+        <!-- Painel de Citação Aleatória -->
+        <div class="quote-panel" id="quotePanel" aria-hidden="true" title="Dê um duplo clique para ler uma nova frase">
+            <!-- Injetado via JS -->
         </div>
     </div>
 
