@@ -13,257 +13,8 @@
     <link rel="icon" type="image/png" sizes="192x192" href="imagens/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="imagens/android-chrome-512x512.png">
 
-    <style>
-        /* Variáveis de Tema Padrão: Premium Dark Gold */
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-primary: #f5f5f5;
-            --text-secondary: #a0a0a0;
-            --gold-primary: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.3);
-            
-            /* Novas variáveis para facilitar a transição de temas */
-            --btn-text: #121212;
-            --input-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.05);
-            --shadow-color: rgba(0, 0, 0, 0.5);
-            
-            --border-radius: 16px;
-            --transition: all 0.3s ease;
-        }
-
-        /* Variáveis de Tema: Claro / Conforto Visual (Ceratocone) */
-        body.theme-ceratocone {
-            --bg-color: #f4f1eb; /* Fundo bege/creme suave, evita o "branco lanterna" */
-            --card-bg: #fcfbf9; /* Branco "sujo" (Off-white) para o card */
-            --text-primary: #2d2d2d; /* Grafite escuro, evita o halation do preto puro */
-            --text-secondary: #5c6366; /* Cinza médio com subtom frio */
-            --gold-primary: #3b7055; /* Verde musgo elegante e relaxante para a vista */
-            --gold-glow: transparent; /* Remove 100% o brilho extra (glare) */
-            
-            --btn-text: #fcfbf9; /* Texto claro dentro do botão verde escuro */
-            --input-bg: rgba(0, 0, 0, 0.03); /* Fundo sutil escurecido para o input */
-            --border-color: rgba(0, 0, 0, 0.08); /* Borda escura e suave */
-            --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra bem mais leve e opaca */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            /* Fontes sans-serif indicadas para evitar borrões em serifas */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            transition: background-color 0.4s ease, color 0.4s ease;
-            line-height: 1.6; /* Aumentado para evitar invasão de halos entre as linhas */
-        }
-
-        /* Botão Flutuante de Tema */
-        .theme-toggle-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--gold-primary);
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 50%;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            box-shadow: 0 4px 12px var(--shadow-color);
-            z-index: 1000;
-        }
-
-        .theme-toggle-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--gold-glow);
-        }
-
-        .theme-toggle-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Card de Input */
-        .input-card {
-            background-color: var(--card-bg);
-            padding: 32px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 24px var(--shadow-color);
-            text-align: center;
-            border: 1px solid var(--border-color);
-            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .input-card h1 {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            font-weight: 500;
-            transition: color 0.4s ease;
-        }
-
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 24px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            background-color: var(--input-bg);
-            border: 2px solid var(--border-color);
-            color: var(--gold-primary);
-            font-size: 3rem;
-            font-weight: 700;
-            text-align: center;
-            padding: 16px;
-            border-radius: 12px;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--gold-primary);
-            box-shadow: 0 0 15px var(--gold-glow); /* Fica transparente no modo claro */
-        }
-
-        button.calc-btn {
-            width: 100%;
-            background-color: var(--gold-primary);
-            color: var(--btn-text);
-            border: none;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        button.calc-btn:hover {
-            filter: brightness(1.1);
-            box-shadow: 0 0 20px var(--gold-glow);
-            transform: translateY(-2px);
-        }
-
-        /* Card de Resultado */
-        .result-card {
-            background-color: var(--card-bg);
-            padding: 32px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            border: 1px solid var(--gold-primary);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            display: none;
-            animation: slideUp 0.4s ease-out;
-            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .result-card.active {
-            display: block;
-        }
-
-        .result-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            transition: color 0.4s ease;
-        }
-
-        .result-date {
-            font-size: 2.8rem;
-            color: var(--gold-primary);
-            font-weight: 800;
-            letter-spacing: -1px;
-            transition: color 0.4s ease;
-        }
-
-        .result-sub {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            transition: color 0.4s ease;
-        }
-
-        /* Lista de Feriados */
-        .holidays-list {
-            margin-top: 24px;
-            text-align: left;
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
-            transition: border-color 0.4s ease;
-        }
-
-        .holidays-title {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            transition: color 0.4s ease;
-        }
-
-        .holidays-items {
-            list-style: none;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            opacity: 0.7;
-            max-height: 120px;
-            overflow-y: auto;
-            padding-right: 8px;
-            transition: color 0.4s ease;
-        }
-
-        .holidays-items li {
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .holidays-items li span.date {
-            color: var(--gold-primary);
-            font-weight: 500;
-        }
-
-        .holidays-items::-webkit-scrollbar {
-            width: 4px;
-        }
-        .holidays-items::-webkit-scrollbar-thumb {
-            background-color: var(--gold-primary);
-            border-radius: 4px;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <!-- Chamada do arquivo CSS Externo -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -277,10 +28,42 @@
     <div class="container">
         <div class="input-card">
             <h1>Calcular Prazo em Dias Úteis</h1>
-            <div class="input-wrapper">
-                <input type="number" id="daysInput" placeholder="Ex: 30" min="1" inputmode="numeric">
+            
+            <!-- Seletor de Retroatividade -->
+            <div class="offset-section">
+                <span class="section-label">O prazo iniciou:</span>
+                <div class="offset-group" id="offsetGroup">
+                    <button class="offset-btn active" data-offset="0">Hoje</button>
+                    <button class="offset-btn" data-offset="1">-1 Dia</button>
+                    <button class="offset-btn" data-offset="2">-2 Dias</button>
+                    <button class="offset-btn" data-offset="3">-3 Dias</button>
+                    <button class="offset-btn" data-offset="4">-4 Dias</button>
+                    <button class="offset-btn" data-offset="5">-5 Dias</button>
+                </div>
             </div>
-            <button class="calc-btn" onclick="calculateDate()">Calcular Data</button>
+
+            <!-- Cards de Atalho Rápido -->
+            <div class="shortcuts-grid">
+                <button class="shortcut-card" onclick="calculateDate(6)">
+                    <span class="sc-title">ED</span>
+                    <span class="sc-days">6 dias úteis</span>
+                </button>
+                <button class="shortcut-card" onclick="calculateDate(7)">
+                    <span class="sc-title">RORSum</span>
+                    <span class="sc-days">7 dias úteis</span>
+                </button>
+                <button class="shortcut-card" onclick="calculateDate(50)">
+                    <span class="sc-title">Demais</span>
+                    <span class="sc-days">50 dias úteis</span>
+                </button>
+            </div>
+
+            <div class="divider">ou digite um prazo manual</div>
+
+            <div class="input-wrapper">
+                <input type="number" id="daysInput" placeholder="Ex: 15" min="1" inputmode="numeric">
+            </div>
+            <button class="calc-btn" onclick="calculateDate()">Calcular Data Manual</button>
         </div>
 
         <div class="result-card" id="resultCard" aria-live="polite">
@@ -296,144 +79,7 @@
         </div>
     </div>
 
-    <script>
-        // --- LÓGICA DO TEMA (COM LOCALSTORAGE) ---
-        const themeBtn = document.getElementById('themeToggleBtn');
-        const body = document.body;
-
-        // Verifica a preferência do usuário ao carregar a página
-        const currentTheme = localStorage.getItem('themePreference');
-        if (currentTheme === 'ceratocone') {
-            body.classList.add('theme-ceratocone');
-        }
-
-        // Alterna entre o tema padrão (Dark) e o tema claro (Conforto Visual)
-        themeBtn.addEventListener('click', () => {
-            body.classList.toggle('theme-ceratocone');
-            
-            // Salva a preferência no navegador do usuário
-            if (body.classList.contains('theme-ceratocone')) {
-                localStorage.setItem('themePreference', 'ceratocone');
-            } else {
-                localStorage.setItem('themePreference', 'default');
-            }
-        });
-
-        // Oculta o card de resultado quando o usuário digita um novo número
-        document.getElementById('daysInput').addEventListener('input', function() {
-            document.getElementById('resultCard').classList.remove('active');
-        });
-
-        // --- LÓGICA DE DATAS ---
-        function checkHoliday(dateObj) {
-            const yyyy = dateObj.getFullYear();
-            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const dd = String(dateObj.getDate()).padStart(2, '0');
-            
-            const dateString = `${yyyy}-${mm}-${dd}`;
-            const monthDay = `${mm}-${dd}`;
-
-            const fixedHolidays = {
-                '01-01': 'Confraternização Universal',
-                '04-21': 'Tiradentes',
-                '05-01': 'Dia do Trabalho',
-                '09-07': 'Independência do Brasil',
-                '10-12': 'N. Sra. Aparecida',
-                '11-02': 'Finados',
-                '11-15': 'Proclamação da República',
-                '11-20': 'Dia da Consciência Negra',
-                '12-25': 'Natal'
-            };
-
-            const mobileHolidays = {
-                '2026-02-16': 'Carnaval',
-                '2026-02-17': 'Carnaval',
-                '2026-04-03': 'Paixão de Cristo',
-                '2026-06-04': 'Corpus Christi', 
-                '2027-02-08': 'Carnaval',
-                '2027-02-09': 'Carnaval',
-                '2027-03-26': 'Paixão de Cristo',
-                '2027-05-27': 'Corpus Christi'
-            };
-
-            if (mobileHolidays[dateString]) return mobileHolidays[dateString];
-            if (fixedHolidays[monthDay]) return fixedHolidays[monthDay];
-            
-            return null;
-        }
-
-        function formatDate(dateObj) {
-            return dateObj.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-
-        function calculateDate() {
-            const daysToAdd = parseInt(document.getElementById('daysInput').value, 10);
-            
-            if (isNaN(daysToAdd) || daysToAdd <= 0) {
-                alert('Por favor, insira um número válido de dias úteis.');
-                return;
-            }
-
-            let currentDate = new Date();
-            currentDate.setHours(0, 0, 0, 0); 
-            
-            const startDateFormatted = formatDate(currentDate);
-            let addedDays = 0;
-            let skippedHolidays = [];
-
-            while (addedDays < daysToAdd) {
-                currentDate.setDate(currentDate.getDate() + 1);
-                
-                const dayOfWeek = currentDate.getDay(); 
-                const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-                const holidayName = checkHoliday(currentDate);
-
-                if (isWeekend) {
-                    continue; 
-                }
-
-                if (holidayName) {
-                    skippedHolidays.push({
-                        date: formatDate(currentDate),
-                        name: holidayName
-                    });
-                    continue; 
-                }
-
-                addedDays++;
-            }
-
-            const resultCard = document.getElementById('resultCard');
-            document.getElementById('finalDateDisplay').innerText = formatDate(currentDate);
-            document.getElementById('calculationInfo').innerText = `Contagem iniciada a partir de ${startDateFormatted}`;
-            
-            const holidaysSection = document.getElementById('holidaysSection');
-            const holidaysList = document.getElementById('holidaysList');
-            holidaysList.innerHTML = '';
-
-            if (skippedHolidays.length > 0) {
-                skippedHolidays.forEach(holiday => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span>${holiday.name}</span> <span class="date">${holiday.date}</span>`;
-                    holidaysList.appendChild(li);
-                });
-                holidaysSection.style.display = 'block';
-            } else {
-                holidaysSection.style.display = 'none';
-            }
-
-            resultCard.classList.add('active');
-        }
-
-        document.getElementById('daysInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                calculateDate();
-            }
-        });
-    </script>
+    <!-- Chamada do arquivo JavaScript Externo -->
+    <script src="script.js"></script>
 </body>
 </html>
