@@ -1,17 +1,29 @@
 // ==========================================
-// 1. TEMA CLARO/ESCURO (LOCALSTORAGE)
+// 1. TEMA CLARO/ESCURO (LOCALSTORAGE GARANTIDO)
 // ==========================================
 const themeBtn = document.getElementById('themeToggleBtn');
 const body = document.body;
 
-// Verifica preferência ao carregar
-const currentTheme = localStorage.getItem('themePreference');
-if (currentTheme === 'ceratocone') body.classList.add('theme-ceratocone');
+// Função centralizada para aplicar e gravar o tema
+function applyTheme(themeName) {
+    if (themeName === 'ceratocone') {
+        body.classList.add('theme-ceratocone');
+    } else {
+        body.classList.remove('theme-ceratocone');
+    }
+    localStorage.setItem('themePreference', themeName);
+}
 
-// Alterna tema
+// Inicialização segura atrelada ao ciclo de vida do DOM
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('themePreference') || 'default';
+    applyTheme(savedTheme);
+});
+
+// Evento de clique para alternância fluida
 themeBtn.addEventListener('click', () => {
-    body.classList.toggle('theme-ceratocone');
-    localStorage.setItem('themePreference', body.classList.contains('theme-ceratocone') ? 'ceratocone' : 'default');
+    const newTheme = body.classList.contains('theme-ceratocone') ? 'default' : 'ceratocone';
+    applyTheme(newTheme);
 });
 
 
