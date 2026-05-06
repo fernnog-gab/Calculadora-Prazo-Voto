@@ -43,47 +43,115 @@
                 </div>
             </div>
 
-            <!-- Cards de Atalho Rápido -->
+            <!-- Atalhos Rápidos com Prazos Duplos -->
             <div class="shortcuts-grid">
-                <button class="shortcut-card" onclick="calculateDate(6)">
+
+                <button class="shortcut-card" onclick="calculateDates(6, 8)">
                     <span class="sc-title">ED</span>
-                    <span class="sc-days">6 dias úteis</span>
+                    <div class="sc-badges">
+                        <span class="badge badge-ficto">6d ficto</span>
+                        <span class="badge badge-real">8d real</span>
+                    </div>
                 </button>
-                <button class="shortcut-card" onclick="calculateDate(7)">
+
+                <button class="shortcut-card" onclick="calculateDates(7, 10)">
                     <span class="sc-title">RORSum</span>
-                    <span class="sc-days">7 dias úteis</span>
+                    <div class="sc-badges">
+                        <span class="badge badge-ficto">7d ficto</span>
+                        <span class="badge badge-real">10d real</span>
+                    </div>
                 </button>
-                <button class="shortcut-card" onclick="calculateDate(30)">
+
+                <button class="shortcut-card" onclick="calculateDates(25, 30)">
                     <span class="sc-title">Originárias</span>
-                    <span class="sc-days">30 dias úteis</span>
+                    <div class="sc-badges">
+                        <span class="badge badge-ficto">25d ficto</span>
+                        <span class="badge badge-real">30d real</span>
+                    </div>
                 </button>
-                <button class="shortcut-card" onclick="calculateDate(50)">
+
+                <button class="shortcut-card" onclick="calculateDates(50, 60)">
                     <span class="sc-title">Demais</span>
-                    <span class="sc-days">50 dias úteis</span>
+                    <div class="sc-badges">
+                        <span class="badge badge-ficto">50d ficto</span>
+                        <span class="badge badge-real">60d real</span>
+                    </div>
                 </button>
+
             </div>
 
-            <div class="divider">ou digite um prazo manual</div>
+            <!-- Painel de Cálculo Manual — Recolhido por Padrão
+                 NOTA: <summary> usa estrutura própria de spans para
+                 evitar conflito com o seletor CSS .divider existente. -->
+            <details class="manual-collapse" id="manualCollapse">
+                <summary class="manual-summary">
+                    <span class="summary-line"></span>
+                    <span class="summary-text">calcular prazo manual</span>
+                    <span class="summary-line"></span>
+                </summary>
 
-            <!-- Digitação Manual -->
-            <div class="input-wrapper">
-                <input type="number" id="daysInput" placeholder="Ex: 15" min="1" inputmode="numeric">
-            </div>
-            <button class="calc-btn" onclick="calculateDate()">Calcular Data Manual</button>
+                <div class="collapse-content">
+                    <div class="manual-inputs">
+
+                        <div class="manual-field">
+                            <label for="fictoInput" class="field-label badge-ficto-label">
+                                Prazo Ficto (dias úteis)
+                            </label>
+                            <input type="number" id="fictoInput"
+                                   placeholder="Ex: 15" min="1" inputmode="numeric">
+                        </div>
+
+                        <div class="manual-field">
+                            <label for="realInput" class="field-label badge-real-label">
+                                Prazo Real (dias úteis)
+                            </label>
+                            <input type="number" id="realInput"
+                                   placeholder="Opcional" min="1" inputmode="numeric">
+                        </div>
+
+                    </div>
+                    <button class="calc-btn" onclick="calculateDates(null, null, true)">
+                        Calcular
+                    </button>
+                </div>
+            </details>
+
         </div>
+        <!-- FIM DO CARD PRINCIPAL -->
 
-        <!-- Card de Resultado Final -->
+
+        <!-- =========================================================
+             CARD DE RESULTADO: Dois blocos com cores distintas
+             ========================================================= -->
         <div class="result-card" id="resultCard" aria-live="polite">
-            <div class="result-label">Data Final</div>
-            <div class="result-date" id="finalDateDisplay">--/--/----</div>
+
+            <div class="dual-results" id="dualResults">
+
+                <!-- Bloco Ficto (Assistentes) -->
+                <div class="result-box box-ficto">
+                    <div class="result-box-label">Prazo Ficto</div>
+                    <div class="result-box-sublabel">Assistentes</div>
+                    <div class="result-date" id="fictoDisplay">--/--/----</div>
+                </div>
+
+                <!-- Bloco Real (Gestor) -->
+                <div class="result-box box-real" id="boxReal">
+                    <div class="result-box-label">Prazo Real</div>
+                    <div class="result-box-sublabel">Gestor</div>
+                    <div class="result-date" id="realDisplay">--/--/----</div>
+                </div>
+
+            </div>
+
             <div class="result-sub" id="calculationInfo"></div>
-            
+
             <div class="holidays-list" id="holidaysSection" style="display: none;">
                 <div class="holidays-title">Feriados Desconsiderados:</div>
-                <ul class="holidays-items" id="holidaysList">
-                </ul>
+                <ul class="holidays-items" id="holidaysList"></ul>
             </div>
+
         </div>
+        <!-- FIM DO CARD DE RESULTADO -->
 
         <!-- Painel de Citação Aleatória -->
         <div class="quote-panel" id="quotePanel" aria-hidden="true" title="Dê um duplo clique para ler uma nova frase">

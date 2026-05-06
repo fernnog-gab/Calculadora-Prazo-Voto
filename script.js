@@ -36,11 +36,8 @@ const savedOffset = localStorage.getItem('prazoOffsetPreference');
 function applyOffset(offsetValue) {
     currentOffset = parseInt(offsetValue, 10);
     document.querySelectorAll('.offset-btn').forEach(btn => {
-        if (parseInt(btn.getAttribute('data-offset'), 10) === currentOffset) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+        const isActive = parseInt(btn.getAttribute('data-offset'), 10) === currentOffset;
+        btn.classList.toggle('active', isActive);
     });
 }
 
@@ -59,13 +56,17 @@ document.querySelectorAll('.offset-btn').forEach(btn => {
 
 
 // ==========================================
-// 3. EVENTOS DE INPUT
+// 3. EVENTOS DE INPUT — CAMPOS MANUAIS
+// Reescrito integralmente: IDs fictoInput/realInput substituem
+// o antigo daysInput; sem listeners duplicados.
 // ==========================================
-document.getElementById('daysInput').addEventListener('input', () => {
-    document.getElementById('resultCard').classList.remove('active');
-});
-document.getElementById('daysInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') calculateDate();
+['fictoInput', 'realInput'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+        document.getElementById('resultCard').classList.remove('active');
+    });
+    document.getElementById(id).addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') calculateDates(null, null, true);
+    });
 });
 
 
@@ -99,49 +100,103 @@ function formatDate(dateObj) {
     return dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-function calculateDate(shortcutDays = null) {
-    let daysToAdd = shortcutDays !== null ? shortcutDays : parseInt(document.getElementById('daysInput').value, 10);
-    if (shortcutDays !== null) document.getElementById('daysInput').value = shortcutDays;
-    
-    if (isNaN(daysToAdd) || daysToAdd <= 0) {
-        alert('Por favor, insira um número válido de dias úteis.');
-        return;
-    }
-
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); 
-    if (currentOffset > 0) currentDate.setDate(currentDate.getDate() - currentOffset);
-    
-    const startDateFormatted = formatDate(currentDate);
-    let addedDays = 0, skippedHolidays = [];
+/**
+ * Avança N dias úteis a partir de uma data-base.
+ * @param {Date}   startDate  - Data inicial (clonada internamente; não sofre mutação).
+ * @param {number} daysToAdd  - Quantidade de dias úteis a adicionar.
+ * @returns {{ finalDate: string, skippedHolidays: Array<{date: string, name: string}> }}
+ */
+function addBusinessDays(startDate, daysToAdd) {
+    // Clona para não mutar o objeto original recebido como parâmetro
+    let current    = new Date(startDate);
+    let addedDays  = 0;
+    let skipped    = [];
 
     while (addedDays < daysToAdd) {
-        currentDate.setDate(currentDate.getDate() + 1);
-        const dayOfWeek = currentDate.getDay(); 
-        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-        const holidayName = checkHoliday(currentDate);
+        current.setDate(current.getDate() + 1);
+        const dayOfWeek   = current.getDay();
+        const isWeekend   = (dayOfWeek === 0 || dayOfWeek === 6);
+        const holidayName = checkHoliday(current);
 
-        if (isWeekend) continue; 
-        if (holidayName) {
-            skippedHolidays.push({ date: formatDate(currentDate), name: holidayName });
-            continue; 
-        }
+        if (isWeekend)    continue;
+        if (holidayName)  { skipped.push({ date: formatDate(current), name: holidayName }); continue; }
         addedDays++;
     }
 
-    document.getElementById('finalDateDisplay').innerText = formatDate(currentDate);
-    document.getElementById('calculationInfo').innerText = currentOffset === 0 
-        ? `Contagem iniciada a partir de hoje (${startDateFormatted})`
-        : `Contagem iniciada ${currentOffset} dia(s) atrás (${startDateFormatted})`;
-    
+    return { finalDate: formatDate(current), skippedHolidays: skipped };
+}
+
+/**
+ * Ponto de entrada principal. Calcula e exibe os prazos ficto e real.
+ * @param {number|null} fictoDays  - Dias úteis do prazo ficto (null = modo manual).
+ * @param {number|null} realDays   - Dias úteis do prazo real  (null = não exibir bloco real).
+ * @param {boolean}     isManual   - Se verdadeiro, lê os valores dos campos manuais.
+ */
+function calculateDates(fictoDays, realDays, isManual = false) {
+    let fDays = fictoDays;
+    let rDays = realDays;
+
+    if (isManual) {
+        const fictoVal = parseInt(document.getElementById('fictoInput').value, 10);
+        const realVal  = parseInt(document.getElementById('realInput').value,  10);
+
+        if (isNaN(fictoVal) || fictoVal <= 0) {
+            alert('Informe ao menos o Prazo Ficto com um número válido de dias úteis.');
+            return;
+        }
+
+        fDays = fictoVal;
+        // Campo real é opcional no modo manual
+        rDays = (!isNaN(realVal) && realVal > 0) ? realVal : null;
+    }
+
+    // Data-base: hoje, retroagida conforme o seletor de offset
+    let baseDate = new Date();
+    baseDate.setHours(0, 0, 0, 0);
+    if (currentOffset > 0) baseDate.setDate(baseDate.getDate() - currentOffset);
+
+    const baseDateFormatted = formatDate(baseDate);
+
+    // --- Cálculo do Prazo Ficto ---
+    const resultFicto = addBusinessDays(baseDate, fDays);
+    document.getElementById('fictoDisplay').innerText = resultFicto.finalDate;
+
+    // --- Cálculo do Prazo Real (opcional) ---
+    const boxReal    = document.getElementById('boxReal');
+    const dualGrid   = document.getElementById('dualResults');
+    let allHolidays  = [...resultFicto.skippedHolidays];
+
+    if (rDays !== null) {
+        const resultReal = addBusinessDays(baseDate, rDays);
+        document.getElementById('realDisplay').innerText = resultReal.finalDate;
+        boxReal.style.display  = '';
+        dualGrid.classList.remove('single-result');
+
+        // Mescla feriados sem duplicar datas já presentes no período ficto
+        const fictoDateSet = new Set(resultFicto.skippedHolidays.map(h => h.date));
+        resultReal.skippedHolidays.forEach(h => {
+            if (!fictoDateSet.has(h.date)) allHolidays.push(h);
+        });
+    } else {
+        boxReal.style.display = 'none';
+        dualGrid.classList.add('single-result');
+    }
+
+    // --- Informação de Início ---
+    document.getElementById('calculationInfo').innerText = currentOffset === 0
+        ? `Contagem iniciada a partir de hoje (${baseDateFormatted})`
+        : `Contagem iniciada ${currentOffset} dia(s) atrás (${baseDateFormatted})`;
+
+    // --- Renderização dos Feriados ---
     const holidaysSection = document.getElementById('holidaysSection');
-    const holidaysList = document.getElementById('holidaysList');
+    const holidaysList    = document.getElementById('holidaysList');
     holidaysList.innerHTML = '';
 
-    if (skippedHolidays.length > 0) {
-        skippedHolidays.forEach(holiday => {
+    if (allHolidays.length > 0) {
+        allHolidays.forEach(holiday => {
             const li = document.createElement('li');
-            li.innerHTML = `<span>${holiday.name}</span> <span class="date">${holiday.date}</span>`;
+            li.innerHTML = `<span>${holiday.name}</span>
+                            <span class="date">${holiday.date}</span>`;
             holidaysList.appendChild(li);
         });
         holidaysSection.style.display = 'block';
@@ -149,7 +204,16 @@ function calculateDate(shortcutDays = null) {
         holidaysSection.style.display = 'none';
     }
 
-    document.getElementById('resultCard').classList.add('active');
+    // --- Animação do Card de Resultado ---
+    // requestAnimationFrame duplo garante que o browser completou
+    // um ciclo de renderização antes de reativar a animação CSS.
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.remove('active');
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            resultCard.classList.add('active');
+        });
+    });
 }
 
 

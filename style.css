@@ -1,4 +1,6 @@
-/* Variáveis de Tema Padrão: Premium Dark Gold */
+/* ============================================================
+   VARIÁVEIS DE TEMA PADRÃO: Premium Dark Gold
+   ============================================================ */
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
@@ -6,17 +8,27 @@
     --text-secondary: #a0a0a0;
     --gold-primary: #D4AF37;
     --gold-glow: rgba(212, 175, 55, 0.3);
-    
+
     --btn-text: #121212;
     --input-bg: rgba(255, 255, 255, 0.03);
     --border-color: rgba(255, 255, 255, 0.05);
     --shadow-color: rgba(0, 0, 0, 0.5);
-    
+
+    /* PRAZOS DUPLOS — Tema Escuro
+       Ficto = Azul suave | Real = Âmbar quente
+       Par distinguível por daltônicos (não é vermelho/verde) */
+    --color-ficto: #74c0fc;
+    --color-real:  #ffd43b;
+    --badge-ficto-text: #0d1b2a;
+    --badge-real-text:  #2b1c00;
+
     --border-radius: 16px;
     --transition: all 0.3s ease;
 }
 
-/* Variáveis de Tema: Claro / Conforto Visual (Ceratocone) */
+/* ============================================================
+   VARIÁVEIS DE TEMA CLARO — Conforto Visual (Ceratocone)
+   ============================================================ */
 body.theme-ceratocone {
     --bg-color: #f4f1eb;
     --card-bg: #fcfbf9;
@@ -24,11 +36,16 @@ body.theme-ceratocone {
     --text-secondary: #5c6366;
     --gold-primary: #3b7055;
     --gold-glow: transparent;
-    
+
     --btn-text: #fcfbf9;
     --input-bg: rgba(0, 0, 0, 0.03);
     --border-color: rgba(0, 0, 0, 0.08);
     --shadow-color: rgba(0, 0, 0, 0.08);
+
+    --color-ficto: #1971c2;
+    --color-real:  #e67700;
+    --badge-ficto-text: #ffffff;
+    --badge-real-text:  #ffffff;
 }
 
 * {
@@ -114,75 +131,313 @@ body {
     font-weight: bold; box-shadow: 0 0 10px var(--gold-glow);
 }
 
-.shortcuts-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 12px; 
-    margin-bottom: 24px; 
+/* ============================================================
+   ATALHOS RÁPIDOS COM BADGES DUPLOS
+   ============================================================ */
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .shortcut-card {
-    background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px;
-    padding: 16px 8px; cursor: pointer; transition: var(--transition); display: flex;
-    flex-direction: column; align-items: center; justify-content: center;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.shortcut-card:hover { border-color: var(--gold-primary); transform: translateY(-2px); background-color: rgba(212, 175, 55, 0.05); }
-
-body.theme-ceratocone .shortcut-card:hover { background-color: rgba(59, 112, 85, 0.05); }
-
-.sc-title { color: var(--gold-primary); font-weight: 800; font-size: 1.1rem; margin-bottom: 4px; }
-.sc-days { color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; }
-
-.divider {
-    display: flex; align-items: center; text-align: center; color: var(--text-secondary);
-    font-size: 0.85rem; margin-bottom: 24px;
+.shortcut-card:hover {
+    border-color: var(--gold-primary);
+    transform: translateY(-2px);
+    background-color: rgba(212, 175, 55, 0.05);
 }
 
-.divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border-color); }
-.divider::before { margin-right: 10px; }
-.divider::after { margin-left: 10px; }
+body.theme-ceratocone .shortcut-card:hover {
+    background-color: rgba(59, 112, 85, 0.05);
+}
 
-/* --- INPUTS E BOTÕES GERAIS --- */
-.input-wrapper { position: relative; margin-bottom: 24px; }
+.sc-title {
+    color: var(--gold-primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
 
+.sc-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.badge-ficto {
+    background-color: var(--color-ficto);
+    color: var(--badge-ficto-text);
+}
+
+.badge-real {
+    background-color: var(--color-real);
+    color: var(--badge-real-text);
+}
+
+
+/* ============================================================
+   PAINEL MANUAL RECOLHÍVEL
+   ============================================================ */
+.manual-collapse {
+    margin-bottom: 24px;
+}
+
+.manual-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    list-style: none;
+    outline: none;
+    user-select: none;
+    -webkit-user-select: none;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
+}
+
+.manual-summary::-webkit-details-marker { display: none; }
+.manual-summary::marker { display: none; }
+
+.manual-summary:hover { color: var(--gold-primary); }
+
+.summary-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.manual-summary:hover .summary-line {
+    background-color: var(--gold-primary);
+}
+
+.summary-text { white-space: nowrap; padding: 0 4px; }
+
+.collapse-content {
+    padding-top: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.manual-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.manual-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.field-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-ficto-label { color: var(--color-ficto); }
+.badge-real-label  { color: var(--color-real); }
+
+.manual-field input[type="number"] {
+    font-size: 2rem;
+    padding: 12px;
+}
+
+
+/* ============================================================
+   INPUTS E BOTÕES GERAIS
+   ============================================================ */
 input[type="number"] {
-    width: 100%; background-color: var(--input-bg); border: 2px solid var(--border-color);
-    color: var(--gold-primary); font-size: 3rem; font-weight: 700; text-align: center;
-    padding: 16px; border-radius: 12px; outline: none; transition: var(--transition);
+    width: 100%;
+    background-color: var(--input-bg);
+    border: 2px solid var(--border-color);
+    color: var(--gold-primary);
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 16px;
+    border-radius: 12px;
+    outline: none;
+    transition: var(--transition);
 }
 
-input[type="number"]:focus { border-color: var(--gold-primary); box-shadow: 0 0 15px var(--gold-glow); }
+input[type="number"]:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 15px var(--gold-glow);
+}
 
 button.calc-btn {
-    width: 100%; background-color: var(--gold-primary); color: var(--btn-text); border: none;
-    padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 12px; cursor: pointer;
-    transition: var(--transition); text-transform: uppercase; letter-spacing: 1px;
+    width: 100%;
+    background-color: var(--gold-primary);
+    color: var(--btn-text);
+    border: none;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-button.calc-btn:hover { filter: brightness(1.1); box-shadow: 0 0 20px var(--gold-glow); transform: translateY(-2px); }
+button.calc-btn:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 0 20px var(--gold-glow);
+    transform: translateY(-2px);
+}
 
-/* --- RESULTADOS --- */
+
+/* ============================================================
+   CARD DE RESULTADOS — ESTRUTURA DUPLA
+   ============================================================ */
 .result-card {
-    background-color: var(--card-bg); padding: 32px; border-radius: var(--border-radius);
-    text-align: center; border: 1px solid var(--gold-primary); box-shadow: 0 8px 32px var(--shadow-color);
-    display: none; animation: slideUp 0.4s ease-out; transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    background-color: var(--card-bg);
+    padding: 28px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    border: 1px solid var(--gold-primary);
+    box-shadow: 0 8px 32px var(--shadow-color);
+    display: none;
+    animation: slideUp 0.4s ease-out;
+    transition: background-color 0.4s ease, border-color 0.4s ease,
+                box-shadow 0.4s ease;
 }
 
 .result-card.active { display: block; }
-.result-label { font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-.result-date { font-size: 2.8rem; color: var(--gold-primary); font-weight: 800; letter-spacing: -1px; }
-.result-sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px; }
 
-.holidays-list { margin-top: 24px; text-align: left; border-top: 1px solid var(--border-color); padding-top: 16px; }
-.holidays-title { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; }
-.holidays-items { list-style: none; font-size: 0.8rem; color: var(--text-primary); opacity: 0.7; max-height: 120px; overflow-y: auto; padding-right: 8px; }
-.holidays-items li { margin-bottom: 6px; display: flex; justify-content: space-between; }
-.holidays-items li span.date { color: var(--gold-primary); font-weight: 500; }
+.dual-results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.dual-results.single-result {
+    grid-template-columns: 1fr;
+}
+
+.result-box {
+    padding: 20px 16px;
+    border-radius: 12px;
+    background-color: var(--input-bg);
+    border-left: 4px solid;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.box-ficto { border-color: var(--color-ficto); }
+.box-real  { border-color: var(--color-real); }
+
+.result-box-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+}
+
+.result-box-sublabel {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    opacity: 0.65;
+    margin-bottom: 8px;
+}
+
+.box-ficto .result-date {
+    color: var(--color-ficto);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.box-real .result-date {
+    color: var(--color-real);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.result-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   LISTA DE FERIADOS
+   ============================================================ */
+.holidays-list {
+    margin-top: 24px;
+    text-align: left;
+    border-top: 1px solid var(--border-color);
+    padding-top: 16px;
+}
+
+.holidays-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.holidays-items {
+    list-style: none;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    opacity: 0.7;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.holidays-items li {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.holidays-items li span.date {
+    color: var(--color-real);
+    font-weight: 500;
+}
+
 .holidays-items::-webkit-scrollbar { width: 4px; }
-.holidays-items::-webkit-scrollbar-thumb { background-color: var(--gold-primary); border-radius: 4px; }
+.holidays-items::-webkit-scrollbar-thumb {
+    background-color: var(--gold-primary);
+    border-radius: 4px;
+}
 
-/* --- CITAÇÕES INSPIRACIONAIS --- */
+/* ============================================================
+   CITAÇÕES INSPIRACIONAIS
+   ============================================================ */
 .quote-panel {
     margin-top: 8px;
     text-align: center;
@@ -192,11 +447,9 @@ button.calc-btn:hover { filter: brightness(1.1); box-shadow: 0 0 20px var(--gold
     padding: 0 16px;
     line-height: 1.4;
     cursor: pointer;
-    /* Configuração de transição suave em vez de animação crua */
     opacity: 0;
-    transition: opacity 0.5s ease-in-out; 
-    /* Impede o usuário de selecionar texto de azul ao dar o duplo clique */
-    user-select: none; 
+    transition: opacity 0.5s ease-in-out;
+    user-select: none;
     -webkit-user-select: none;
 }
 
@@ -212,8 +465,28 @@ button.calc-btn:hover { filter: brightness(1.1); box-shadow: 0 0 20px var(--gold
     letter-spacing: 0.5px;
 }
 
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* ============================================================
+   ANIMAÇÕES
+   ============================================================ */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
-@media (max-width: 400px) {
-    .shortcuts-grid { grid-template-columns: 1fr; }
-                                          }
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — MOBILE
+   ============================================================ */
+@media (max-width: 480px) {
+    .shortcuts-grid      { grid-template-columns: 1fr; }
+    .dual-results        { grid-template-columns: 1fr; }
+    .manual-inputs       { grid-template-columns: 1fr; }
+    .sc-badges           { flex-direction: row; flex-wrap: wrap; }
+
+    .box-ficto .result-date,
+    .box-real  .result-date { font-size: 2rem; }
+}
