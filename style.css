@@ -351,6 +351,19 @@ button.calc-btn:hover {
     border-left: 4px solid;
     text-align: left;
     transition: var(--transition);
+    cursor: pointer;
+    user-select: none;
+}
+
+.result-box:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.result-box:active {
+    transform: translateY(1px);
+    filter: brightness(0.9);
 }
 
 .box-ficto { border-color: var(--color-ficto); }
