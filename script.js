@@ -254,3 +254,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // "Easter Egg" / UX: Muda a frase ao dar duplo clique no painel
 quotePanel.addEventListener('dblclick', updateQuote);
+
+// ==========================================
+// 6. ÁREA DE TRANSFERÊNCIA (COPY TO CLIPBOARD)
+// ==========================================
+const boxFictoEl = document.getElementById('boxFicto');
+const boxRealEl = document.getElementById('boxReal');
+
+// Função cirúrgica para copiar e dar feedback visual sutil
+async function copyToClipboard(element, textToCopy, originalLabelElement) {
+    try {
+        await navigator.clipboard.writeText(textToCopy);
+        
+        // Feedback visual: altera temporariamente o texto da label para "COPIADO!"
+        const originalText = originalLabelElement.innerText;
+        originalLabelElement.innerText = "COPIADO!";
+        originalLabelElement.style.color = "var(--gold-primary)";
+        originalLabelElement.style.fontWeight = "bold";
+        
+        // Retorna ao estado original após 1.5 segundos
+        setTimeout(() => {
+            originalLabelElement.innerText = originalText;
+            originalLabelElement.style.color = ""; 
+            originalLabelElement.style.fontWeight = "";
+        }, 1500);
+    } catch (err) {
+        console.error('Falha ao copiar para a área de transferência: ', err);
+        alert('Não foi possível copiar a data. Verifique as permissões do navegador.');
+    }
+}
+
+// Evento: Cópia do Prazo Ficto (Apenas a data)
+boxFictoEl.addEventListener('click', () => {
+    const dateText = document.getElementById('fictoDisplay').innerText;
+    if (dateText === '--/--/----') return; // Evita ação se não houver cálculo
+    
+    const labelEl = boxFictoEl.querySelector('.result-box-label');
+    copyToClipboard(boxFictoEl, dateText, labelEl);
+});
+
+// Evento: Cópia do Prazo Real (Prefixo em caixa alta + Data)
+boxRealEl.addEventListener('click', () => {
+    const dateText = document.getElementById('realDisplay').innerText;
+    if (dateText === '--/--/----') return; // Evita ação se não houver cálculo
+    
+    const labelEl = boxRealEl.querySelector('.result-box-label');
+    const textToCopy = `PRAZO FINAL: ${dateText}`;
+    copyToClipboard(boxRealEl, textToCopy, labelEl);
+});
