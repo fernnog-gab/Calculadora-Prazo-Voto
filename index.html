@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Prazos | Dias Úteis</title>
 
-    <!-- Configurações de Favicon -->
     <link rel="icon" type="image/x-icon" href="imagens/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="imagens/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="imagens/favicon-16x16.png">
@@ -13,12 +12,10 @@
     <link rel="icon" type="image/png" sizes="192x192" href="imagens/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="imagens/android-chrome-512x512.png">
 
-    <!-- Chamada do arquivo CSS Externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Ícone SVG de Lâmpada para alternar o tema -->
     <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Alternar Modo Claro / Conforto Visual" title="Ativar Tema Claro (Conforto Visual)">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2.25c-3.17 0-5.75 2.58-5.75 5.75 0 1.94 1.05 3.65 2.53 4.71.4.29.64.76.64 1.25v1.29c0 .96.79 1.75 1.75 1.75h1.66c.96 0 1.75-.79 1.75-1.75v-1.29c0-.49.24-.96.64-1.25 1.48-1.06 2.53-2.77 2.53-4.71 0-3.17-2.58-5.75-5.75-5.75zm1.5 16.5h-3v.75c0 .41.34.75.75.75h1.5c.41 0 .75-.34.75-.75v-.75zm-1.5 3c-.83 0-1.5-.67-1.5-1.5h3c0 .83-.67 1.5-1.5 1.5z"/>
@@ -26,11 +23,9 @@
     </button>
 
     <div class="container">
-        <!-- Card Principal de Input e Atalhos -->
         <div class="input-card">
             <h1>Calcular Prazo em Dias Úteis</h1>
             
-            <!-- Seletor de Retroatividade -->
             <div class="offset-section">
                 <span class="section-label">O prazo iniciou:</span>
                 <div class="offset-group" id="offsetGroup">
@@ -43,7 +38,6 @@
                 </div>
             </div>
 
-            <!-- Atalhos Rápidos com Prazos Duplos -->
             <div class="shortcuts-grid">
 
                 <button class="shortcut-card" onclick="calculateDates(6, 8)">
@@ -80,9 +74,6 @@
 
             </div>
 
-            <!-- Painel de Cálculo Manual — Recolhido por Padrão
-                 NOTA: <summary> usa estrutura própria de spans para
-                 evitar conflito com o seletor CSS .divider existente. -->
             <details class="manual-collapse" id="manualCollapse">
                 <summary class="manual-summary">
                     <span class="summary-line"></span>
@@ -117,25 +108,17 @@
             </details>
 
         </div>
-        <!-- FIM DO CARD PRINCIPAL -->
-
-
-        <!-- =========================================================
-             CARD DE RESULTADO: Dois blocos com cores distintas
-             ========================================================= -->
         <div class="result-card" id="resultCard" aria-live="polite">
 
             <div class="dual-results" id="dualResults">
 
-                <!-- Bloco Ficto (Assistentes) -->
-                <div class="result-box box-ficto">
+                <div class="result-box box-ficto" id="boxFicto" role="button" tabindex="0" title="Clique para copiar a data">
                     <div class="result-box-label">Prazo Ficto</div>
                     <div class="result-box-sublabel">Assistentes</div>
                     <div class="result-date" id="fictoDisplay">--/--/----</div>
                 </div>
 
-                <!-- Bloco Real (Gestor) -->
-                <div class="result-box box-real" id="boxReal">
+                <div class="result-box box-real" id="boxReal" role="button" tabindex="0" title="Clique para copiar o prazo final">
                     <div class="result-box-label">Prazo Real</div>
                     <div class="result-box-sublabel">Gestor</div>
                     <div class="result-date" id="realDisplay">--/--/----</div>
@@ -151,15 +134,10 @@
             </div>
 
         </div>
-        <!-- FIM DO CARD DE RESULTADO -->
-
-        <!-- Painel de Citação Aleatória -->
         <div class="quote-panel" id="quotePanel" aria-hidden="true" title="Dê um duplo clique para ler uma nova frase">
-            <!-- Injetado via JS -->
-        </div>
+            </div>
     </div>
 
-    <!-- Chamada do arquivo JavaScript Externo -->
     <script src="script.js"></script>
 </body>
 </html>
